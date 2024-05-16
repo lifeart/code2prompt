@@ -125,7 +125,7 @@ export default class App extends Component {
           <Input
             class='m-2 flex-grow'
             aria-label='Github repo link'
-            placeholder='Github repo link, like: https://github.com/lifeart/glimmerx-workshop/tree/master '
+            placeholder='Github repo link, like: https://github.com/lifeart/template-gxt '
             @value={{this.name}}
             @onChange={{this.updateName}}
             disabled={{this.isLoading}}
