@@ -64,7 +64,7 @@ export default class App extends Component {
     e: Event,
   ) => {
     const node = e.target as HTMLInputElement;
-    const values = node.value.split(',').map((item) => item.trim());
+    const values = node.value.split(',').map((item) => item.trim()).filter(Boolean);
 
     write(key, values);
     this[key] = values;
