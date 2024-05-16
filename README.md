@@ -36,8 +36,7 @@ Here are the contents of each file:
 ```
 
 ```hbs
-<FILE_PATH>index.html</FILE_PATH>
-<FILE_CONTENT><!doctype html>
+<FILE path="index.html"><!doctype html>
 <html lang="en">
   <head>
     <title>Code2Prompt</title>
@@ -48,7 +47,7 @@ Here are the contents of each file:
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
-</FILE_CONTENT>
+</FILE>
 
 ```
 

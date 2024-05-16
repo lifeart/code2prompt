@@ -151,14 +151,14 @@ export const retrieveGithubRepoInfo = async (
   );
 
   formattedString += `
-    Here is list of files in the repository,
-    File name is enclosed in <FILE_PATH> tag and content is enclosed in <FILE_CONTENT> tag
-    -------------------------------------------
-    Here is Directory tree:
-    <DIRECTORY_TREE>
-    ${directoryTree}
-    </DIRECTORY_TREE>
-    -------------------------------------------
+Here is list of files in the repository.
+File name located in "PATH" property of <File> tag and  file content is enclosed in <FILE> tag.
+Project directory tree is enclosed in <DIRECTORY_TREE> tag.
+-------------------------------------------
+<DIRECTORY_TREE>
+${directoryTree.trimEnd()}
+</DIRECTORY_TREE>
+-------------------------------------------
   `;
 
   if (!config.isAlive()) {
@@ -179,9 +179,10 @@ export const retrieveGithubRepoInfo = async (
       }
       const fileContent = getFileContent(fileInfo);
       formattedString += `
-    <FILE_PATH>${path}</FILE_PATH>
-    <FILE_CONTENT>${fileContent}</FILE_CONTENT>
-    `;
+<FILE path="${path}">
+${fileContent}
+</FILE>
+    `.trimEnd();
     } catch (error) {
       //
     }
