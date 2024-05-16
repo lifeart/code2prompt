@@ -1,18 +1,92 @@
-# GXT + TS + Vite
+# Code2Prompt
 
-This template should help get you started developing with GXT and TypeScript in Vite.
+This is a simple web application that allows you to generate a prompt for a large language model (LLM) based on the contents of a GitHub repository.
 
-[Demo](https://lifeart.github.io/template-gxt/)
+## Usage
 
-## Recommended IDE Setup
+1. Enter your GitHub personal access token. This is required to access private repositories.
+2. Enter the URL of the GitHub repository you want to use.
 
-[VS Code](https://code.visualstudio.com/) + [Syntax](https://marketplace.visualstudio.com/items?itemName=lifeart.vscode-glimmer-syntax) + [Glint](https://marketplace.visualstudio.com/items?itemName=typed-ember.glint-vscode).
+The application will then fetch the contents of the repository and generate a prompt that you can use with an LLM.
 
-## Template content
+## Example
 
+**Input:**
 
-- Vite
-- TypeScript
-- GXT
-- qUnit
-- Tailwind
+* GitHub URL: https://github.com/lifeart/glimmerx-workshop/tree/master
+
+**Output:**
+
+```
+I have a GitHub repository with the following file structure:
+```
+
+```html
+<DIRECTORY_TREE>
+readme.md
+[public/]
+    favicon.ico
+[src/]
+    App.gts
+</DIRECTORY_TREE>
+```
+
+```
+Here are the contents of each file:
+```
+
+```hbs
+<FILE_PATH>index.html</FILE_PATH>
+<FILE_CONTENT><!doctype html>
+<html lang="en">
+  <head>
+    <title>Code2Prompt</title>
+    <link rel="manifest" href="./site.webmanifest" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
+</FILE_CONTENT>
+
+```
+
+## Development
+
+### Prerequisites
+
+* Node.js
+* pnpm
+
+### Installation
+
+```
+pnpm install
+```
+
+### Development Server
+
+```
+pnpm dev
+```
+
+### Building
+
+```
+pnpm build
+```
+
+### Testing
+
+```
+pnpm test
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+MIT
