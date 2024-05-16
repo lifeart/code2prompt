@@ -31,7 +31,7 @@ const fetchRepoContent = async (
   path = '',
   token?: string,
 ): Promise<GithubFileInfo[] | GithubFileInfo> => {
-  const baseUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const baseUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github.v3+json',
   };
