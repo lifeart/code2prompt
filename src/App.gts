@@ -4,8 +4,6 @@ import { autofocus } from '@/modifiers/autofocus';
 import { retrieveGithubRepoInfo } from './utils/repo-loader';
 import { read, write } from './utils/persistent';
 import { dirsToSkip, filesToSkip, knownExtensions } from './utils/constants';
-import { tpl } from './utils/tpl';
-import { toFile } from './utils/serializer';
 import { loadFile } from './utils/file-loader';
 
 export default class App extends Component {
@@ -41,6 +39,10 @@ export default class App extends Component {
     this.name = node.value;
     write('name', this.name);
   };
+  // get repoFileLink() {
+  //   // https://github.com/lifeart/glimmer-next/archive/refs/heads/master.zip
+  //   return '';
+  // }
   loadData = async () => {
     this.epoch++;
     const currentEpoch = this.epoch;
