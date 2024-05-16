@@ -72,7 +72,7 @@ export default class App extends Component {
   <template>
     <section style.min-width='600px'>
       <h2 class='text-orange-300' style.margin-bottom='20px'>
-        Hello, User!
+        Hello, Human!
       </h2>
       <p>
         <div class='flex justify-between items-center'>
