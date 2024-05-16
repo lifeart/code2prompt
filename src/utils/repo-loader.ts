@@ -147,7 +147,7 @@ export const retrieveGithubRepoInfo = async (
 //     // formattedString += 'README.md: Not found or error fetching README\n\n';
 //   }
 
-  const [, filePaths] = await buildDirectoryTree(
+  const [directoryTree, filePaths] = await buildDirectoryTree(
     owner,
     repo,
     '',
@@ -157,6 +157,11 @@ export const retrieveGithubRepoInfo = async (
   formattedString += `
     Here is list of files in the repository,
     File name is enclosed in <FILE_PATH> tag and content is enclosed in <FILE_CONTENT> tag
+    -------------------------------------------
+    Here is Directory tree:
+    <DIRECTORY_TREE>
+    ${directoryTree}
+    </DIRECTORY_TREE>
     -------------------------------------------
   `;
 
