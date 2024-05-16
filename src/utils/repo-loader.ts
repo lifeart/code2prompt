@@ -1,3 +1,5 @@
+// import { dirsToSkip, filesToSkip, knownExtensions } from "./constants";
+
 interface GithubFileInfo {
   name: string;
   path: string;
@@ -13,44 +15,6 @@ interface GithubRepoInfo {
   repo: string;
 }
 
-const knownExtensions = [
-  '.py',
-  '.ipynb',
-  '.html',
-  '.css',
-  '.js',
-  '.ts',
-  '.tsx',
-  '.hbs',
-  '.gjs',
-  '.gts',
-  '.jsx',
-  '.rst',
-  '.md',
-];
-
-const filesToSkip = [
-    '.eslintrc.js',
-    '.gitignore',
-    '.glintrc.yml',
-    '.template-lintrc.js',
-    'readme.md',
-    'jest.config.ts',
-    'postcss.config.js',
-    'yarn.lock',
-    // 'tsconfig.json',
- 
-];
-
-const dirsToSkip = [
-  '.github',
-  'node_modules',
-  'build',
-  'dist',
-  'out',
-  '.storybook',
-  '.vscode',
-];
 
 const parseGithubUrl = (url: string): GithubRepoInfo => {
   const parsedUrl = new URL(url);
@@ -96,9 +60,14 @@ const buildDirectoryTree = async (
   owner: string,
   repo: string,
   path = '',
-  token?: string,
+  token = '',
   indent = 0,
   filePaths: Set<string> = new Set(),
+  config: {
+    dirsToSkip: string[];
+    filesToSkip: string[];
+    knownExtensions: string[];
+  },
 ): Promise<[string, Set<string>]> => {
   const items = await fetchRepoContent(owner, repo, path, token);
   if (!Array.isArray(items)) {
@@ -106,7 +75,7 @@ const buildDirectoryTree = async (
   }
   let treeStr = '';
   for (const item of items) {
-    if (dirsToSkip.some((dir) => item.path.includes(dir))) {
+    if (config.dirsToSkip.some((dir) => item.path.includes(dir))) {
       continue;
     }
     if (item.type === 'dir') {
@@ -118,12 +87,13 @@ const buildDirectoryTree = async (
         token,
         indent + 1,
         filePaths,
+        config,
       );
       treeStr += nestedTree;
     } else {
       treeStr += '    '.repeat(indent) + `${item.name}\n`;
       const ext = `.${item.name.split('.').pop() ?? ''}`;
-      if (knownExtensions.includes(ext!) && !filesToSkip.includes(item.name.toLowerCase())) {
+      if (config.knownExtensions.includes(ext!) && !config.filesToSkip.includes(item.name.toLowerCase())) {
         filePaths.add(item.path);
       }
     }
@@ -133,7 +103,16 @@ const buildDirectoryTree = async (
 
 export const retrieveGithubRepoInfo = async (
   url: string,
-  token?: string,
+  token: string = '',
+  config: {
+    dirsToSkip: string[];
+    filesToSkip: string[];
+    knownExtensions: string[];
+  } = {
+    dirsToSkip: [],
+    filesToSkip: [],
+    knownExtensions: [],
+  },
 ): Promise<string> => {
   const { owner, repo } = parseGithubUrl(url);
 
@@ -155,6 +134,9 @@ export const retrieveGithubRepoInfo = async (
     repo,
     '',
     token,
+    0,
+    new Set(),
+    config,
   );
 
   formattedString += `

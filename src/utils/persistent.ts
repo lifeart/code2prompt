@@ -1,11 +1,17 @@
 const storageKey = `code2propmpt`;
 
-type StorageKey = 'token' | 'name';
+type StorageKey = 'token' | 'name' | 'knownExtensions' | 'filesToSkip' | 'dirsToSkip';
 
-export function read(key: StorageKey, defaultValue: string): string {
+type ReadTypes = string | object | undefined;
+export function read<T extends ReadTypes>(key: StorageKey, defaultValue: T): T {
   const accessKey = `${storageKey}/${key}`;
   try {
-    return localStorage.getItem(accessKey) ?? String(defaultValue);
+    if (typeof defaultValue === 'object') {
+      const value = localStorage.getItem(accessKey);
+      return value ? JSON.parse(value) : defaultValue;
+    } else {
+      return (localStorage.getItem(accessKey) as T) ?? defaultValue;
+    }
   } catch {
     return defaultValue;
   }
