@@ -147,7 +147,7 @@ export const retrieveGithubRepoInfo = async (
 //     // formattedString += 'README.md: Not found or error fetching README\n\n';
 //   }
 
-  const [directoryTree, filePaths] = await buildDirectoryTree(
+  const [, filePaths] = await buildDirectoryTree(
     owner,
     repo,
     '',
