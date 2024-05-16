@@ -16,6 +16,7 @@ export default class App extends Component {
   @tracked isLoading = false;
   updateName = (e: Event) => {
     const node = e.target as HTMLInputElement;
+    if (this.name === node.value) return;
     if (this.isLoading) {
       node.value = this.name;
       return;
@@ -58,9 +59,12 @@ export default class App extends Component {
           placeholder='Github repo link, like: https://github.com/lifeart/glimmerx-workshop/tree/master '
           @value={{this.name}}
           @onInput={{this.updateName}}
-          readonly={{this.isLoading}}
+          disabled={{this.isLoading}}
           {{autofocus}}
         />
+        {{#if this.isLoading}}
+          <span class='m-2 text-white'>Loading...</span>
+        {{/if}}
         <textarea class='m-2 block p-2 w-full text-white text-left whitespace-pre overflow-x-scroll'>{{this.result}}</textarea>
       </p>
     </section>
