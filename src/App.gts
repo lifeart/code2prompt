@@ -104,6 +104,10 @@ export default class App extends Component {
       <h2 class='text-orange-300' style.margin-bottom='20px'>
         Hello, Human!
       </h2>
+      <p class='text-white'>
+        This tool will help you to generate a prompt for your LLM based on
+        your project structure. You can upload a zip file with repo or provide a link to
+        the GitHub repository.
       <p>
         <div class='flex justify-between items-center'>
           <label for="file" class='m-2 text-white'>Upload zip file</label>
