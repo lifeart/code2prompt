@@ -58,7 +58,7 @@ export default class App extends Component {
           class='m-2'
           placeholder='Github repo link, like: https://github.com/lifeart/glimmerx-workshop/tree/master '
           @value={{this.name}}
-          @onInput={{this.updateName}}
+          @onChange={{this.updateName}}
           disabled={{this.isLoading}}
           {{autofocus}}
         />
