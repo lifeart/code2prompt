@@ -103,22 +103,27 @@ export default class App extends Component {
         <details class='m-2 w-full'>
           <summary class='cursor-pointer text-blue-500'>Extra Configuration</summary>
           <div class='p-2 border rounded'>
+            <label id="dirs-to-skip" class='text-white'>Exclude folders (comma-separated)</label>
             <Input
               class='m-2'
+              id='dirs-to-skip'
               @value={{this.dirsToSkipAsString}}
               placeholder='Exclude folders (comma-separated)'
-              title='Exclude folders (comma-separated)'
               @onChange={{fn this.updateList 'dirsToSkip'}}
             />
+            <label id="files-to-skip" class='text-white'>Exclude files (comma-separated)</label>
             <Input
               class='m-2'
+              id='files-to-skip'
               @value={{this.filesToSkipAsString}}
               placeholder='Exclude files (comma-separated)'
               title='Exclude folders (comma-separated)'
               @onChange={{fn this.updateList 'filesToSkip'}}
             />
+            <label id="known-extensions" class='text-white'>Include extensions (comma-separated)</label>
             <Input
               class='m-2'
+              id='known-extensions'
               @value={{this.knownExtensionsAsString}}
               placeholder='Include extensions (comma-separated)'
               title='Exclude folders (comma-separated)'
