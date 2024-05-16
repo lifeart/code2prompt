@@ -18,6 +18,7 @@ export default class App extends Component {
   @tracked knownExtensions = knownExtensions;
   @tracked filesToSkip = filesToSkip;
   @tracked dirsToSkip = dirsToSkip;
+  epoch = 0;
   get dirsToSkipAsString() {
     return this.dirsToSkip.join(', ');
   }
@@ -37,14 +38,23 @@ export default class App extends Component {
     this.name = node.value;
     write('name', this.name);
   };
-  loadData = () => {
-   this.result = '';
+  loadData = async () => {
+    this.epoch++;
+    const currentEpoch = this.epoch
+    while (this.isLoading) {
+      if (currentEpoch !== this.epoch) return;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    this.result = '';
     this.isLoading = true;
     try {
       retrieveGithubRepoInfo(this.name, this.token, {
         dirsToSkip: this.dirsToSkip,
         filesToSkip: this.filesToSkip,
         knownExtensions: this.knownExtensions,
+        isAlive: () => {
+          return currentEpoch === this.epoch;
+        },
       })
         .then((result) => {
           this.result = result;
@@ -93,7 +103,7 @@ export default class App extends Component {
             {{autofocus}}
           />
           <button class='m-2 p-2 bg-blue-500 text-white rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300'
-            disabled={{this.isLoading}}
+            style.cursor={{if this.isLoading 'progress' 'pointer'}}
             type='button'
             {{on "click" this.loadData}}>
             Submit

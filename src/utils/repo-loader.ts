@@ -15,7 +15,6 @@ interface GithubRepoInfo {
   repo: string;
 }
 
-
 const parseGithubUrl = (url: string): GithubRepoInfo => {
   const parsedUrl = new URL(url);
   const pathSegments = parsedUrl.pathname.split('/').filter(Boolean);
@@ -50,9 +49,9 @@ const fetchRepoContent = async (
 };
 
 const getFileContent = (fileInfo: GithubFileInfo): string => {
-    if (fileInfo.encoding === 'base64') {
+  if (fileInfo.encoding === 'base64') {
     return atob(fileInfo.content);
-    }
+  }
   return fileInfo.content;
 };
 
@@ -67,6 +66,7 @@ const buildDirectoryTree = async (
     dirsToSkip: string[];
     filesToSkip: string[];
     knownExtensions: string[];
+    isAlive: () => boolean;
   },
 ): Promise<[string, Set<string>]> => {
   const items = await fetchRepoContent(owner, repo, path, token);
@@ -74,6 +74,9 @@ const buildDirectoryTree = async (
     throw new Error('Error fetching directory tree');
   }
   let treeStr = '';
+  if (!config.isAlive()) {
+    throw new Error('Process was terminated');
+  }
   for (const item of items) {
     if (config.dirsToSkip.some((dir) => item.path.includes(dir))) {
       continue;
@@ -89,11 +92,17 @@ const buildDirectoryTree = async (
         filePaths,
         config,
       );
+      if (!config.isAlive()) {
+        throw new Error('Process was terminated');
+      }
       treeStr += nestedTree;
     } else {
       treeStr += '    '.repeat(indent) + `${item.name}\n`;
       const ext = `.${item.name.split('.').pop() ?? ''}`;
-      if (config.knownExtensions.includes(ext!) && !config.filesToSkip.includes(item.name.toLowerCase())) {
+      if (
+        config.knownExtensions.includes(ext!) &&
+        !config.filesToSkip.includes(item.name.toLowerCase())
+      ) {
         filePaths.add(item.path);
       }
     }
@@ -108,26 +117,28 @@ export const retrieveGithubRepoInfo = async (
     dirsToSkip: string[];
     filesToSkip: string[];
     knownExtensions: string[];
+    isAlive: () => boolean;
   } = {
     dirsToSkip: [],
     filesToSkip: [],
     knownExtensions: [],
+    isAlive: () => true,
   },
 ): Promise<string> => {
   const { owner, repo } = parseGithubUrl(url);
 
   let formattedString = '';
 
-//   try {
-//     const readmeInfo = await fetchRepoContent(owner, repo, 'README.md', token);
-//     if (Array.isArray(readmeInfo)) {
-//       throw new Error('Error fetching README');
-//     }
-//     const readmeContent = getFileContent(readmeInfo);
-//     // formattedString += `README.md:\n\n${readmeContent}\n\n\n`;
-//   } catch (error) {
-//     // formattedString += 'README.md: Not found or error fetching README\n\n';
-//   }
+  //   try {
+  //     const readmeInfo = await fetchRepoContent(owner, repo, 'README.md', token);
+  //     if (Array.isArray(readmeInfo)) {
+  //       throw new Error('Error fetching README');
+  //     }
+  //     const readmeContent = getFileContent(readmeInfo);
+  //     // formattedString += `README.md:\n\n${readmeContent}\n\n\n`;
+  //   } catch (error) {
+  //     // formattedString += 'README.md: Not found or error fetching README\n\n';
+  //   }
 
   const [directoryTree, filePaths] = await buildDirectoryTree(
     owner,
@@ -150,23 +161,31 @@ export const retrieveGithubRepoInfo = async (
     -------------------------------------------
   `;
 
+  if (!config.isAlive()) {
+    return 'Process was terminated';
+  }
+
   for (const path of filePaths) {
     try {
-        const fileInfo = await fetchRepoContent(owner, repo, path, token);
-        if (Array.isArray(fileInfo)) {
-            throw new Error('Error fetching file');
-        }
-        const fileContent = getFileContent(fileInfo);
-        formattedString += `
+      if (!config.isAlive()) {
+        return 'Process was terminated';
+      }
+      const fileInfo = await fetchRepoContent(owner, repo, path, token);
+      if (!config.isAlive()) {
+        return 'Process was terminated';
+      }
+      if (Array.isArray(fileInfo)) {
+        throw new Error('Error fetching file');
+      }
+      const fileContent = getFileContent(fileInfo);
+      formattedString += `
     <FILE_PATH>${path}</FILE_PATH>
     <FILE_CONTENT>${fileContent}</FILE_CONTENT>
     `;
     } catch (error) {
-        //
+      //
     }
-
   }
 
   return formattedString;
 };
-
