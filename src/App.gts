@@ -41,7 +41,7 @@ export default class App extends Component {
           @onInput={{this.updateName}}
           {{autofocus}}
         />
-        <textarea class='m-2 block text-left whitespace-pre overflow-x-scroll'>{{this.result}}</textarea>
+        <textarea class='m-2 block p-2 w-full text-white text-left whitespace-pre overflow-x-scroll'>{{this.result}}</textarea>
       </p>
     </section>
   </template>
