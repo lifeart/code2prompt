@@ -142,5 +142,8 @@ export default class App extends Component {
         </div>
       </p>
     </section>
+    <footer><p class="text-center text-xs text-gray-500">
+        Check on 
+        <a href="https://github.com/lifeart/code2prompt/" class="text-blue-500">GitHub</a></p></footer>
   </template>
 }
