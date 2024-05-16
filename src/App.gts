@@ -13,30 +13,49 @@ export default class App extends Component {
   @tracked
   name = read('name', '');
   @tracked result = '';
+  @tracked isLoading = false;
   updateName = (e: Event) => {
-    this.name = (e.target as HTMLInputElement).value;
+    const node = e.target as HTMLInputElement;
+    if (this.isLoading) {
+      node.value = this.name;
+      return;
+    }
+    this.name = node.value;
     write('name', this.name);
     this.result = '';
-    retrieveGithubRepoInfo(
-      this.name,
-      this.token,
-    ).then((result) => {
-      this.result = result;
-    });
+    this.isLoading = true;
+    try {
+      retrieveGithubRepoInfo(
+        this.name,
+        this.token,
+      ).then((result) => {
+        this.result = result;
+        this.isLoading = false;
+      }).catch((e) => {
+        this.result = String(e);
+        this.isLoading = false;
+      });
+    } catch (e) {
+      this.result = String(e);
+      this.isLoading = false;
+    }
+
   };
   <template>
-    <section>
+    <section style.min-width="600px" >
       <h2 class='text-orange-300' style.margin-bottom='20px'>
-        Hello,
-        {{this.name}}!</h2>
+        Hello, User!
+      </h2>
       <p>
         <Input
           class='m-2'
+          placeholder='Github token'
           @value={{this.token}}
           @onInput={{this.updateToken}}
         />
         <Input
           class='m-2'
+          placeholder='Github repo link, like: https://github.com/lifeart/glimmerx-workshop/tree/master '
           @value={{this.name}}
           @onInput={{this.updateName}}
           {{autofocus}}
