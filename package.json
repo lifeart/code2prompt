@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@lifeart/gxt": "^0.0.44",
-    "decorator-transforms": "^2.0.0"
+    "decorator-transforms": "^2.0.0",
+    "fflate": "^0.8.2"
   }
 }

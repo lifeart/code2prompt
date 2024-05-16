@@ -1,5 +1,8 @@
 // import { dirsToSkip, filesToSkip, knownExtensions } from "./constants";
 
+import { toFile } from "./serializer";
+import { tpl } from "./tpl";
+
 interface GithubFileInfo {
   name: string;
   path: string;
@@ -127,7 +130,6 @@ export const retrieveGithubRepoInfo = async (
 ): Promise<string> => {
   const { owner, repo } = parseGithubUrl(url);
 
-  let formattedString = '';
 
   //   try {
   //     const readmeInfo = await fetchRepoContent(owner, repo, 'README.md', token);
@@ -150,20 +152,12 @@ export const retrieveGithubRepoInfo = async (
     config,
   );
 
-  formattedString += `
-Here is list of files in the repository.
-File name located in "PATH" property of <File> tag and  file content is enclosed in <FILE> tag.
-Project directory tree is enclosed in <DIRECTORY_TREE> tag.
--------------------------------------------
-<DIRECTORY_TREE>
-${directoryTree.trimEnd()}
-</DIRECTORY_TREE>
--------------------------------------------
-  `;
+  let formattedString = tpl().replace('{DIRECTORY_TREE}', directoryTree.trimEnd());
 
   if (!config.isAlive()) {
     return 'Process was terminated';
   }
+  let files: string[] = [];
 
   for (const path of filePaths) {
     try {
@@ -178,15 +172,11 @@ ${directoryTree.trimEnd()}
         throw new Error('Error fetching file');
       }
       const fileContent = getFileContent(fileInfo);
-      formattedString += `
-<FILE path="${path}">
-${fileContent}
-</FILE>
-    `.trimEnd();
+      files.push(toFile(fileInfo.path, fileContent));
     } catch (error) {
       //
     }
   }
 
-  return formattedString;
+  return formattedString.replace('{FILES}', files.join('\n'));
 };

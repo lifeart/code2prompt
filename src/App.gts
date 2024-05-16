@@ -4,6 +4,9 @@ import { autofocus } from '@/modifiers/autofocus';
 import { retrieveGithubRepoInfo } from './utils/repo-loader';
 import { read, write } from './utils/persistent';
 import { dirsToSkip, filesToSkip, knownExtensions } from './utils/constants';
+import { tpl } from './utils/tpl';
+import { toFile } from './utils/serializer';
+import { loadFile } from './utils/file-loader';
 
 export default class App extends Component {
   @tracked token = read<string>('token', '');
@@ -82,12 +85,33 @@ export default class App extends Component {
     write(key, values);
     this[key] = values;
   };
+  loadFromFile = async (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    try {
+      this.result = await loadFile(file, {
+        dirsToSkip: this.dirsToSkip,
+        filesToSkip: this.filesToSkip,
+        knownExtensions: this.knownExtensions,
+      });
+    } catch (e) {
+      this.result = String(e);
+    }
+   
+  };
   <template>
     <section style.min-width='600px'>
       <h2 class='text-orange-300' style.margin-bottom='20px'>
         Hello, Human!
       </h2>
       <p>
+        <div class='flex justify-between items-center'>
+          <label for="file" class='m-2 text-white'>Upload zip file</label>
+          <input id="file" type='file' {{on 'change' this.loadFromFile}} />
+        </div>
+        <div class='flex justify-between items-center'>
+          <label class='m-2 text-white'>OR</label>
+        </div>
         <div class='flex justify-between items-center'>
           <Input
             class='m-2'
