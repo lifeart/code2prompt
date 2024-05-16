@@ -32,6 +32,7 @@ const filesToSkip = [
     '.gitignore',
     '.glintrc.yml',
     '.template-lintrc.js',
+    'readme.md',
     'jest.config.ts',
     'postcss.config.js',
     'yarn.lock',
@@ -120,7 +121,7 @@ const buildDirectoryTree = async (
     } else {
       treeStr += '    '.repeat(indent) + `${item.name}\n`;
       const ext = `.${item.name.split('.').pop() ?? ''}`;
-      if (knownExtensions.includes(ext!) && !filesToSkip.includes(item.name)) {
+      if (knownExtensions.includes(ext!) && !filesToSkip.includes(item.name.toLowerCase())) {
         filePaths.add(item.path);
       }
     }
