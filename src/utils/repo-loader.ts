@@ -22,6 +22,8 @@ const knownExtensions = [
   '.ts',
   '.tsx',
   '.hbs',
+  '.gjs',
+  '.gts',
   '.jsx',
   '.rst',
   '.md',
