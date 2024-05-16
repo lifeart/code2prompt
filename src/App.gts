@@ -58,6 +58,7 @@ export default class App extends Component {
           placeholder='Github repo link, like: https://github.com/lifeart/glimmerx-workshop/tree/master '
           @value={{this.name}}
           @onInput={{this.updateName}}
+          readonly={{this.isLoading}}
           {{autofocus}}
         />
         <textarea class='m-2 block p-2 w-full text-white text-left whitespace-pre overflow-x-scroll'>{{this.result}}</textarea>
