@@ -7,9 +7,10 @@ export async function loadFile(
     dirsToSkip: string[];
     filesToSkip: string[];
     knownExtensions: string[];
+    excludeDirectoryListing: boolean;
   },
 ): Promise<string> {
-  const { dirsToSkip, filesToSkip, knownExtensions } = options;
+  const { dirsToSkip, filesToSkip, knownExtensions, excludeDirectoryListing } = options;
   const { unzip, strFromU8 } = await import('fflate');
 
   const filter = (file: { name: string }) => {
@@ -64,7 +65,7 @@ export async function loadFile(
     files[key] = strFromU8(file);
     fileWithContent.push(toFile(key, files[key]));
   });
-  let formattedString = tpl().replace(
+  let formattedString = tpl({excludeDirectoryListing}).replace(
     '{DIRECTORY_TREE}',
     Object.keys(files).join('\n'),
   );

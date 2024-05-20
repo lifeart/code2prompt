@@ -1,6 +1,6 @@
 const storageKey = `code2propmpt`;
 
-type StorageKey = 'token' | 'name' | 'knownExtensions' | 'filesToSkip' | 'dirsToSkip';
+type StorageKey = 'excludeDirectoryListing' | 'token' | 'name' | 'knownExtensions' | 'filesToSkip' | 'dirsToSkip';
 
 type ReadTypes = string | object | undefined;
 export function read<T extends ReadTypes>(key: StorageKey, defaultValue: T): T {

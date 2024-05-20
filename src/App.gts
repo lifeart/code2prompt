@@ -14,6 +14,11 @@ export default class App extends Component {
   };
   @tracked
   name = read<string>('name', '');
+  @tracked excludeDirectoryListing = read<string>('excludeDirectoryListing', 'false') === 'true';
+  toggleExcludeDirectoryListing = () => {
+    this.excludeDirectoryListing = !this.excludeDirectoryListing;
+    write('excludeDirectoryListing', String(this.excludeDirectoryListing));
+  };
   @tracked result = '';
   @tracked isLoading = false;
   @tracked knownExtensions = knownExtensions;
@@ -57,6 +62,7 @@ export default class App extends Component {
         dirsToSkip: this.dirsToSkip,
         filesToSkip: this.filesToSkip,
         knownExtensions: this.knownExtensions,
+        excludeDirectoryListing: this.excludeDirectoryListing,
         isAlive: () => {
           return currentEpoch === this.epoch;
         },
@@ -95,12 +101,22 @@ export default class App extends Component {
         dirsToSkip: this.dirsToSkip,
         filesToSkip: this.filesToSkip,
         knownExtensions: this.knownExtensions,
+        excludeDirectoryListing: this.excludeDirectoryListing,
       });
     } catch (e) {
       this.result = String(e);
     }
    
   };
+  get hasContent() {
+    return this.result.length > 0;
+  }
+  get textDownloadLink() {
+    return `data:text/plain;charset=utf-8,${encodeURIComponent(this.result)}`;
+  }
+  onCopyToClipboard = () => {
+    navigator.clipboard.writeText(this.result);
+  }
   <template>
     <section style.min-width='600px'>
       <h2 class='text-orange-300' style.margin-bottom='20px'>
@@ -175,6 +191,13 @@ export default class App extends Component {
                 title='Exclude folders (comma-separated)'
                 @onChange={{fn this.updateList 'knownExtensions'}}
               />
+              <label id="exclude-directory-linsting" class='text-white'>Exclude directory listing</label>
+              <Input
+                class='m-2'
+                id='exclude-directory-linsting'
+                type='checkbox'
+                @checked={{this.excludeDirectoryListing}}
+                @onChange={{fn this.toggleExcludeDirectoryListing}} />
             </div>
           </details>
         </div>
@@ -186,6 +209,26 @@ export default class App extends Component {
             class='m-2 block p-2 w-full text-white text-left whitespace-pre overflow-x-scroll'
           >{{this.result}}</textarea>
         </div>
+        {{#if this.hasContent}}
+          <div class='flex justify-between items-center'>
+            <a
+              class='m-2 p-2 w-full bg-blue-500 text-white rounded-lg shadow-lg hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-300'
+              href={{this.textDownloadLink}}
+              download='code2prompt.txt'
+            >
+              Download generated prompt as text file
+            </a>
+          </div>
+          <div class='flex justify-between items-center'>
+            <button
+              class='m-2 p-2 w-full bg-blue-500 text-white rounded-lg shadow-lg hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-300'
+              type='button'
+              {{on 'click' this.onCopyToClipboard}}
+            >
+              Copy to clipboard
+            </button>
+          </div>
+        {{/if}}
       </p>
     </section>
     <footer><p class='text-center text-xs text-gray-500'>

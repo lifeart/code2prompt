@@ -120,11 +120,13 @@ export const retrieveGithubRepoInfo = async (
     dirsToSkip: string[];
     filesToSkip: string[];
     knownExtensions: string[];
+    excludeDirectoryListing: boolean;
     isAlive: () => boolean;
   } = {
     dirsToSkip: [],
     filesToSkip: [],
     knownExtensions: [],
+    excludeDirectoryListing: false,
     isAlive: () => true,
   },
 ): Promise<string> => {
@@ -152,7 +154,9 @@ export const retrieveGithubRepoInfo = async (
     config,
   );
 
-  let formattedString = tpl().replace('{DIRECTORY_TREE}', directoryTree.trimEnd());
+  let formattedString = tpl({
+    excludeDirectoryListing: config.excludeDirectoryListing,
+  }).replace('{DIRECTORY_TREE}', directoryTree.trimEnd());
 
   if (!config.isAlive()) {
     return 'Process was terminated';
